@@ -1,0 +1,128 @@
+:root
+{
+	--themeColor: #4169E1;
+}
+
+* { font-family: Ubuntu, Arial, sans-serif; }
+
+body { overflow: hidden; }
+
+.hide { display: none !important; }
+
+.align-left { text-align: left; }
+
+.align-center { text-align: center; }
+
+.align-right { text-align: right; }
+
+#ah-content
+{
+	width: 320px;
+	height: 420px;
+	overflow: auto;
+	position: relative;
+}
+
+.heading
+{
+	color: var(--themeColor);
+}
+
+ul
+{
+	list-style: none;
+	padding: 0;
+}
+
+ul > li
+{
+	list-style-type: none;
+	padding: 10px 5px;
+	border: 1px solid #808080;
+	border-radius: 2px;
+	cursor: pointer;
+}
+
+ul > li:not(:first-child)
+{
+	border-top: 0;
+}
+
+ul > li:hover
+{
+	color: var(--themeColor);
+}
+
+@keyframes spin
+{
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+#loading-overlay
+{
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	background: rgba(0, 0, 0, 0.7);
+}
+
+#loading-overlay::before
+{
+	content: "";
+	display: inline-block;
+	border: 8px solid #fff;
+	border-radius: 50%;
+	border-top: 8px solid var(--themeColor);
+	width: 50px;
+	height: 50px;
+	animation: spin 1s linear infinite;
+}
+
+.form-field
+{
+	display: inline-flex;
+	flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+	/*margin-top: 0;*/
+}
+
+.text-theme
+{
+	color: var(--themeColor);
+}
+
+.text-danger
+{
+	color: #f00;
+}
+
+#savedSQLScripts
+{
+	width: 100%;
+}
+
+.div-code
+{
+	position: relative;
+}
+
+.div-actions
+{
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}
+
+.div-actions a
+{
+	text-decoration: none;
+}

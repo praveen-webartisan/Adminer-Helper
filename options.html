@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="assets/css/app.css">
+
+	<style type="text/css">
+		ul {
+			width: max-content;
+			margin: auto;
+		}
+
+		html, body {
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			overflow: auto;
+		}
+
+		#addWebsiteContainer {
+			/**/
+		}
+
+		li > div {
+			display: inline-block;
+			float: right;
+			margin-left: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="align-center" id="addWebsiteContainer">
+		<h1 class="heading">Add New Website</h1>
+		<div class="form-field">
+			<span style="margin-bottom: 10px;">Like: <code class="text-theme">https://example.com/adminer.php</code></span>
+			<div style="margin-bottom: 5px;">
+				<input type="text" name="" placeholder="Full URL to the Adminer file" id="txtAddWebsite">
+				<button id="btnAddWebsite">
+					&crarr;
+				</button>
+			</div>
+			<span class="text-danger" id="errAddWebsite"></span>
+		</div>
+	</div>
+
+	<h1 class="heading align-center">Adminer Websites</h1>
+
+	<ul id="websitesList"></ul>
+
+	<script src="assets/js/app.js"></script>
+	<script src="assets/js/options.js"></script>
+</body>
+</html>

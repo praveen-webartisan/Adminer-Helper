@@ -1,0 +1,31 @@
+{
+	"name": "Adminer Helper",
+	"description": "An Helper extension for Adminer.php to storing, retrieving SQL queries executed on the SQL commands",
+	"version": "1.0.1",
+	"manifest_version": 3,
+	"background": {
+		"service_worker": "background.js"
+	},
+	"options_page": "options.html",
+	"action": {
+		"default_popup": "default.html",
+		"default_icon": {
+			"16": "/assets/images/ah16.png",
+			"32": "/assets/images/ah32.png",
+			"48": "/assets/images/ah48.png",
+			"128": "/assets/images/ah128.png"
+		}
+	},
+	"icons": {
+		"16": "/assets/images/ah16.png",
+		"32": "/assets/images/ah32.png",
+		"48": "/assets/images/ah48.png",
+		"128": "/assets/images/ah128.png"
+	},
+	"permissions": [
+		"storage", "contextMenus", "scripting", "webNavigation"
+	],
+	"host_permissions": [
+		"*://*/*"
+	]
+}
