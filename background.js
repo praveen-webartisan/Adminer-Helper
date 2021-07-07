@@ -27,23 +27,66 @@ function getSQLScripts(callback)
 		var sqlScripts = result.sqlScripts;
 
 		sqlScripts = sqlScripts.map(function (sqlScript) {
-			return decodeURIComponent(sqlScript).replace(/\\n/g, "\n");
+			let query = sqlScript;
+
+			if(typeof(sqlScript) == 'object') {
+				query = sqlScript['query'];
+			} else {
+				sqlScript = {
+					'query': sqlScript,
+				};
+			}
+
+			sqlScript['query'] = decodeURIComponent(query).replace(/\\n/g, "\n");
+
+			return sqlScript;
 		});
 
 		if(typeof(callback) == "function") {
-			callback(sqlScripts.reverse());
+			callback(sqlScripts);
 		}
 	});
+}
+
+function formatSQLScriptsForUpdate(sqlScripts) {
+	// Avoid duplicates:
+	sqlScripts = sqlScripts.filter(function(value, index, array) {
+		let query = typeof(value) == 'object' ? value['query'] : value;
+		return array.findIndex(t => t.query == query) == index;
+	});
+
+	sqlScripts = sqlScripts.map(function (sqlScript) {
+		sqlScript.query = encodeURIComponent(sqlScript.query);
+
+		return sqlScript;
+	});
+
+	return sqlScripts;
 }
 
 function saveSQLScript(script, callback)
 {
 	getSQLScripts(function (sqlScripts) {
-		sqlScripts.push(script);
+		// Avoid Empty values:
+		if(script || false) {
+			var formattedScript = script;
+			let dateTime = new Date().toString();
 
-		sqlScripts = sqlScripts.map(function (sqlScript) {
-			return encodeURIComponent(sqlScript);
-		});
+			if(typeof(script) == 'object') {
+				formattedScript['dateTime'] = dateTime;
+
+				script = formattedScript['query'].trim();
+			} else {
+				formattedScript = {
+					'query': script.trim(),
+					'dateTime': dateTime,
+				};
+			}
+
+			sqlScripts.push(formattedScript);
+		}
+
+		sqlScripts = formatSQLScriptsForUpdate(sqlScripts);
 
 		chrome.storage.sync.set({ "sqlScripts": sqlScripts }, function () {
 			getSQLScripts(callback);
@@ -53,9 +96,7 @@ function saveSQLScript(script, callback)
 
 function updateSQLScripts(sqlScripts, callback)
 {
-	sqlScripts = sqlScripts.map(function (sqlScript) {
-		return encodeURIComponent(sqlScript);
-	});
+	sqlScripts = formatSQLScriptsForUpdate(sqlScripts);
 
 	chrome.storage.sync.set({ "sqlScripts": sqlScripts }, function () {
 		if(typeof(callback) == "function") {
@@ -69,7 +110,10 @@ function selectSQLFromTextareaAndSave(tab)
 	chrome.scripting.executeScript({
 		"target": { "tabId": tab.id },
 		"function": function () {
-			return document.querySelector('[name="query"]').value;
+			return {
+				'query': document.querySelector('[name="query"]').value,
+				'website': location.origin + location.pathname,
+			};
 		}
 	}, (result) => {
 		var selectedSqlScript;
@@ -92,7 +136,10 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 			chrome.scripting.executeScript({
 				"target": { "tabId": tab.id },
 				"function": function () {
-					return window.getSelection().toString().replace(/\n/g, "\\n");
+					return {
+						'query': window.getSelection().toString().replace(/\n/g, "\\n"),
+						'website': location.origin + location.pathname,
+					};
 				}
 			}, (result) => {
 				var selectedSqlScript;
@@ -154,7 +201,10 @@ async function ahExtensionInit()
 
 					if(sqlScript) {
 						if(sqlScript.trim().length > 0) {
-							saveSQLScript(sqlScript);
+							saveSQLScript({
+								'query': sqlScript,
+								'website': details.url.substring(0, details.url.indexOf('?')),
+							});
 						}
 					} else {
 						chrome.tabs.query({ active: true, currentWindow: true }, function ([tab]) {

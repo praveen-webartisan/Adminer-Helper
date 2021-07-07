@@ -113,6 +113,9 @@ h1, h2, h3, h4, h5, h6
 .div-code
 {
 	position: relative;
+	background: #f5f2f0;
+	padding: 1em;
+	margin: 0.5em 0;
 }
 
 .div-actions
@@ -125,4 +128,28 @@ h1, h2, h3, h4, h5, h6
 .div-actions a
 {
 	text-decoration: none;
+}
+
+:not(pre) > code[class*="language-"], pre[class*="language-"] {
+	background: transparent;
+}
+
+pre[class*="language-"] {
+	padding: unset;
+	margin: 0;
+	overflow: unset;
+}
+
+.div-meta {
+	font-size: 0.6rem;
+	text-align: right;
+}
+
+.div-meta > * {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.div-meta > span {
+	color: grey;
 }

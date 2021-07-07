@@ -32,15 +32,11 @@ function onSQLScriptDeleteClicked(e)
 	e.preventDefault();
 	e.stopPropagation();
 
-	var sqlScript = e.target.closest(".div-code").dataset.sqlScript;
+	var queryIndexToRemove = e.target.closest(".div-code").dataset.queryIndex;
 
 	collectSavedSQLScriptsFromBGScript(function (response) {
 		if(typeof(response) != "undefined") {
-			var i = response.indexOf(sqlScript);
-
-			if(i > -1) {
-				response.splice(i, 1);
-			}
+			response.splice(queryIndexToRemove, 1);
 
 			updateSavedSQLScriptsUsingBGScript(response, refreshSQLScriptsList);
 		}
@@ -54,15 +50,20 @@ function refreshSQLScriptsList()
 			sqlScriptsList.innerHTML = "";
 
 		if(typeof(response) != "undefined") {
-			response.forEach(function (sqlScript, i) {
+			var sqlScripts = response;
+			var sqlScriptsCount = sqlScripts.length;
+
+			for(var i = (sqlScriptsCount - 1); i >= 0; i--) {
+				sqlScript = sqlScripts[i];
+
 				var contentDiv = document.createElement("div");
 				contentDiv.classList.add("div-code");
-				contentDiv.dataset.sqlScript = sqlScript;
+				contentDiv.dataset.queryIndex = i;
 
 				var pre = document.createElement("pre");
 				var code = document.createElement("code");
 
-				code.textContent = sqlScript;
+				code.textContent = sqlScript.query;
 				code.classList.add("language-sql");
 
 				pre.appendChild(code);
@@ -87,8 +88,29 @@ function refreshSQLScriptsList()
 
 				contentDiv.appendChild(actionsDiv);
 
+				if(typeof(sqlScript.dateTime) != "undefined") {
+					var metaDiv = document.createElement("div");
+					metaDiv.classList.add("div-meta");
+
+					var dateTimeSpan = document.createElement("span");
+					dateTimeSpan.textContent = sqlScript.dateTime;
+
+					metaDiv.appendChild(dateTimeSpan);
+
+					if(typeof(sqlScript.website) != "undefined") {
+						var websiteLink = document.createElement("a");
+						websiteLink.textContent = sqlScript.website;
+						websiteLink.setAttribute("href", sqlScript.website);
+
+						metaDiv.appendChild(document.createElement("br"));
+						metaDiv.appendChild(websiteLink);
+					}
+
+					contentDiv.appendChild(metaDiv);
+				}
+
 				sqlScriptsList.appendChild(contentDiv);
-			});
+			}
 		}
 
 		Prism.highlightAll();
@@ -105,6 +127,14 @@ async function defaultPopupInit()
 			chrome.runtime.openOptionsPage();
 		} else {
 			window.open(chrome.runtime.getURL("options.html"));
+		}
+	});
+
+	window.addEventListener("click", function(e) {
+		if(e.target.tagName.toLowerCase() == "a" && e.target.href !== undefined) {
+			chrome.tabs.create({
+				url:e.target.href
+			});
 		}
 	});
 

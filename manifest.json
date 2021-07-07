@@ -1,7 +1,7 @@
 {
 	"name": "Adminer Helper",
 	"description": "An Helper extension for Adminer.php to storing, retrieving SQL queries executed on the SQL commands",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"manifest_version": 3,
 	"background": {
 		"service_worker": "background.js"
